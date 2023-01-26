@@ -1,0 +1,8 @@
+name = "JuliaRayTracing"
+uuid = "36458880-97f8-400b-9373-487bfefebb01"
+authors = []
+version = "0.1.0"
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
