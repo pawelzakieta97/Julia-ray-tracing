@@ -1,31 +1,30 @@
 module RendererModule
 
-include("ray.jl")
-include("camera.jl")
-include("environment.jl")
 
-using .RayModule
-using .CameraModule
-using .EnvironmentModule
+using ..JuliaRayTracing: Vec3, Mat3, Mat4
+using ..RayModule
+using ..CameraModule
+using ..EnvironmentModule
 
 struct Renderer
     camera::Camera
     environment::Environment
 end
 
-function render(renderer::Renderer)::Matrix{Real}
-    rays = CameraModule.generateRaysFor(renderer.camera,1)
-    colors = rayColor.(rays)
+function render(renderer::Renderer)::Matrix{Vec3}
+    rays = CameraModule.generateRaysFor(renderer.camera, 1)
+    colors = rayColor.(Ref(renderer),rays)
     indices = CameraModule.getPixelIndices(renderer.camera, rays)
-    image = zeros((rendrer.camera.height, renderer.camera.width))
-    for i=1:size(rays)
-        image[indices[i][1], indices[i][2]] = colors[i]
+    image = zeros(Vec3, (renderer.camera.height, renderer.camera.width))
+    for i in 1:length(rays)
+        image[indices[i][1], indices[i][2]] = colors[i] #
     end
     return image
 end
-function rayColor(ray::Ray)
-    return EnvironmentModule.hitEnvironment(environment, ray)
-end 
+function rayColor(renderer::Renderer, ray::Ray)
+    return EnvironmentModule.hitEnvironment(renderer.environment, ray)
+end
+
 export Renderer
 export render
 end
