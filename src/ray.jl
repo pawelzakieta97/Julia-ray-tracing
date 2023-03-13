@@ -1,6 +1,6 @@
-module RayModule
+# module RayModule
 
-using ..JuliaRayTracing: Vec3, Mat3, Mat4
+# using ..JuliaRayTracing: Vec3, Mat3, Mat4
 
 struct Ray
     start::Vec3
@@ -8,5 +8,11 @@ struct Ray
     color::Vec3
 end
 
-export Ray
+function getDistanceFromRay(ray::Ray, point::Vec3)::Real
+    r = point - ray.start
+    t = (dot(ray.direction, r)) * ray.direction
+    d = r - t
+    return norm(d) 
 end
+    
+

@@ -1,12 +1,12 @@
-module CameraModule
+# module CameraModule
 
-using ..JuliaRayTracing: Vec3, Mat3, Mat4
+# using ..JuliaRayTracing: Vec3, Mat3, Mat4
 using LinearAlgebra: norm
 
-using ..RayModule
+# using ..RayModule
 
-export Camera
-
+# export Camera
+# export generateRaysFor
 struct Camera
     pose::Mat4
     f::Real
@@ -15,20 +15,24 @@ struct Camera
 end
 
 function generateRaysFor(camera::Camera, samples::Integer)::Vector{Ray}
-    rays = Vector{Ray}()
+    rays = Vector{Ray}(undef, camera.width * camera.height)
     start = getCameraPosition(camera)
+    cameraRotation = getCameraRotation(camera)
+    i = 1
     for x = -camera.width/2+0.5:camera.width/2-0.5
         for y = -camera.height/2+0.5:camera.height/2-0.5
             direction = Vec3(x / camera.f, y / camera.f, 1)
-            direction = getCameraRotation(camera) * direction
+            direction = cameraRotation * direction
             newRay = Ray(start, direction / norm(direction), Vec3([1, 1, 1]))
-            push!(rays, newRay)
+            rays[i] = newRay
+            i = i + 1
         end
     end
     # px_x = ones(height) * transpose(range(-width/2+0.5, width/2))
     # px_y = range(-width/2+0.5, width/2)
     return rays
 end
+
 function getCameraPosition(camera::Camera)::Vec3
     return camera.pose[1:3, 4]
 end
@@ -55,4 +59,4 @@ function getPixelIndices(camera::Camera, rays::Vector{Ray})::Vector{Tuple{Intege
 end
 
 
-end
+# end
